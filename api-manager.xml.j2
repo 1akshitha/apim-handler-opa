@@ -1,0 +1,73 @@
+{% if apim.opa_security is defined %}
+    <OPASecurityHandler>
+        {% if apim.opa_security.operation_mode is defined %}
+        <OperationMode>{{apim.opa_security.operation_mode}}</OperationMode>
+        {% endif %}
+        {% if apim.opa_security.cash_expiry_time is defined %}
+        <CacheExpiryTime>{{apim.opa_security.cash_expiry_time}}</CacheExpiryTime>
+        {% endif %}
+        {% if apim.opa_security.skip_cert_validation is defined %}
+        <SkipCertValidation>{{apim.opa_security.skip_cert_validation}}</SkipCertValidation>
+        {% endif %}
+        {% if apim.opa_security.block_if_server_unreachable is defined %}
+        <BlockIfServerUnreachable>{{apim.opa_security.block_if_server_unreachable}}</BlockIfServerUnreachable>
+        {% endif %}
+        {% if apim.opa_security.block_if_policy_not_found is defined %}
+        <BlockIfPolicyNotFound>{{apim.opa_security.block_if_policy_not_found}}</BlockIfPolicyNotFound>
+        {% endif %}
+        <OPAServer>
+            <EndPoint>{{apim.opa_security.server_endpoint}}</EndPoint>
+            <BackupEndPoint>{{apim.opa_security.backup_server_endpoint}}</BackupEndPoint>
+            <AuthToken>{{apim.opa_security.auth_token}}</AuthToken>
+        </OPAServer>
+        {% if apim.opa_security.cache is defined %}
+        <Cache>
+            {% if apim.opa_security.cache.token_cache is defined %}
+            <TokenCache>{{apim.opa_security.cache.token_cache}}</TokenCache>
+            {% endif %}
+            {% if apim.opa_security.cache.cookie_cache is defined %}
+            <CookieCache>{{apim.opa_security.cache.cookie_cache}}</CookieCache>
+            {% endif %}
+            {% if apim.opa_security.cache.ip_cache is defined %}
+            <IPCache>{{apim.opa_security.cache.ip_cache}}</IPCache>
+            {% endif %}
+        </Cache>
+        {% endif %}
+        {% if apim.opa_security.data_publisher is defined %}
+        <DataPublisher>
+            {% if apim.opa_security.data_publisher.max_per_route is defined %}
+            <MaxPerRoute>{{apim.opa_security.data_publisher.max_per_route}}</MaxPerRoute>
+            {% endif %}
+            {% if apim.opa_security.data_publisher.max_open_connections is defined %}
+            <MaxOpenConnections>{{apim.opa_security.data_publisher.max_open_connections}}</MaxOpenConnections>
+            {% endif %}
+            {% if apim.opa_security.data_publisher.connection_timeout is defined %}
+            <ConnectionTimeout>{{apim.opa_security.data_publisher.connection_timeout}}</ConnectionTimeout>
+            {% endif %}
+        </DataPublisher>
+        {% endif %}
+        {% if apim.opa_security.threadpool_executor is defined %}
+        <ThreadPoolExecutor>
+            {% if apim.opa_security.threadpool_executor.core_pool_size is defined %}
+            <CorePoolSize>{{apim.opa_security.threadpool_executor.core_pool_size}}</CorePoolSize>
+            {% endif %}
+            {% if apim.opa_security.threadpool_executor.max_pool_size is defined %}
+            <MaximumPoolSize>{{apim.opa_security.threadpool_executor.max_pool_size}}</MaximumPoolSize>
+            {% endif %}
+            {% if apim.opa_security.threadpool_executor.keep_alive_time is defined %}
+            <KeepAliveTime>{{apim.opa_security.threadpool_executor.keep_alive_time}}</KeepAliveTime>
+            {% endif %}
+        </ThreadPoolExecutor>
+        {% endif %}
+        {% if apim.opa_security.stack_object_pool is defined %}
+        <StackObjectPool>
+            {% if apim.opa_security.stack_object_pool.max_idle is defined %}
+            <MaxIdle>{{apim.opa_security.stack_object_pool.max_idle}}</MaxIdle>
+            {% endif %}
+            {% if apim.opa_security.stack_object_pool.init_idle_capacity is defined %}
+            <InitIdleCapacity>{{apim.opa_security.stack_object_pool.init_idle_capacity}}</InitIdleCapacity>
+            {% endif %}
+        </StackObjectPool>
+        {% endif %}
+    </OPASecurityHandler>
+    {% endif %}
