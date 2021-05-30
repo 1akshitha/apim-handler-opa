@@ -30,6 +30,7 @@ hs_err_pid*
 # Java extension in VS code files
 .classpath
 .project
+.idea
 *.prefs
 target/test-classes/*
 *Test.txt
@@ -38,3 +39,5 @@ target/classes/org/wso2/carbon/apimgt/securityenforcer/internal/samplePingAIMana
 target/classes/META-INF/*
 target/maven-shared-archive-resources/*
 target/.plxarc
+
+org.wso2.carbon.apimgt.securityenforcer.opa.iml
