@@ -50,9 +50,9 @@ Following configurations are for WSO2 Api Manager 3.0.0 or newer versions. For o
 **<APIM_HOME>/repository/conf** directory.
 
    ```
-    [apim.ai_security]
+    [apim.opa_security]
     operation_mode = "sync"
-    server_endpoint = "http://localhost/8081/v1/data"
+    server_endpoint = "http://localhost:8181/v1/data"
    ```
    
 4. To engage the handler to APIs, you need to update the **<APIM_HOME>/repository/resources/api_templates/velocity_template.xml** file.
