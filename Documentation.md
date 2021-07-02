@@ -15,7 +15,8 @@ Users can use OPA to enforce policies in microservices, Kubernetes, CI/CD pipeli
 
 ## How this happens
 
-To achieve advanced and customized policy use cases, we can easily use OPA policy engine with WSO2 API manager. Data flow will be as follows.
+To achieve advanced and customized policy use cases, we can easily use OPA policy engine with WSO2 API manager. Data flow will be as follows.    
+
 ![alt text](https://raw.githubusercontent.com/1akshitha/apim-handler-opa/master/images/OPA-integration.png)
 
 This integration consists of a new custom handler (OPA Security Handler) when working with the WSO2 API Gateway data flow. After this handler receives a request from a client, an http/https request is sent to the OPA engine with the client request metadata.
