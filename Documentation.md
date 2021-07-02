@@ -1,5 +1,32 @@
 # WSO2 API Manager extension with Open Policy Agent
-**This guide is for API manager versions of 2.x versions only. For 3.x and 4.0.0, please refer the [QUICK_START_GUID_NEW](https://github.com/1akshitha/apim-handler-opa/blob/master/QUICK_START_GUIDE_NEW.md)**.
+
+## WSO2 API manager
+
+WSO2 API Manager is a complete platform for building, integrating, and exposing your digital services as managed APIs in the cloud, on-premise, and hybrid architectures to drive your digital transformation strategy.
+
+It allows API developers to design, publish, and manage the lifecycle of APIs and API product managers to create API products from one or more APIs.
+
+
+## Open Policy Agent
+
+The Open Policy Agent (OPA) is an open source, general-purpose policy engine that unifies policy enforcement across the stack. 
+OPA provides a high-level declarative language that lets users to specify policy as code and simple APIs to offload policy decision-making from the software. 
+Users can use OPA to enforce policies in microservices, Kubernetes, CI/CD pipelines, API gateways, and more.
+
+## How this happens
+
+To achieve advanced and customized policy use cases, we can easily use OPA policy engine with WSO2 API manager. Data flow will be as follows.
+![alt text](https://raw.githubusercontent.com/1akshitha/apim-handler-opa/master/images/OPA-integration.png)
+
+This integration consists of a new custom handler (OPA Security Handler) when working with the WSO2 API Gateway data flow. After this handler receives a request from a client, an http/https request is sent to the OPA engine with the client request metadata.
+This meta data contains all the relevant information regarding the request and policy makers can use these information to define their polices.
+
+The OPA engine responds after validating the input against the written rego policy and provided additional data for the policy.
+
+If the response will be either true or false and if it responds with true, the OPA Security Handler will forward the request and if the response is false, it blocks the request.
+
+
+## Integration
 
 #### Prerequisites
 
@@ -9,11 +36,11 @@
 - **Install Apache Maven 3.x.x**
  (https://maven.apache.org/download.cgi#)
 
-- **Install relevant WSO2 API Manager version**.
-(https://wso2.com/api-management/previous-releases/)
+- **Install the latest WSO2 API Manager**.
+(https://wso2.com/api-management/)
 
     Installing WSO2 is very fast and easy. Before you begin, be sure you have met the installation prerequisites, 
-    and then follow the [installation instructions for your platform](https://docs.wso2.com/display/AM260/Installation+Prerequisites/).
+    and then follow the [installation instructions for your platform](https://apim.docs.wso2.com/en/latest/install-and-setup/install/installing-the-product/installing-the-product/).
 
 - **Download the [OPA server](https://www.openpolicyagent.org/docs/latest/#running-opa) and run as a server**
 ```
@@ -24,7 +51,8 @@
 
 **IMPORTANT**
 
-Following configurations are for WSO2 Api Manager 2.x versions.
+Following configurations are for WSO2 Api Manager 3.0.0 or newer versions. For older versions, please refer
+ [Developer Guide.](https://github.com/1akshitha/apim-handler-opa/blob/master/QUICK_START_GUIDE_OLD.md)
 
 
 ### For System Admin
@@ -37,24 +65,21 @@ Following configurations are for WSO2 Api Manager 2.x versions.
 
     Use the following table to update pom.xml with the corresponding dependency versions for API manager.
 
-     | Dependency                |  APIM 2.6.0   |  APIM 2.5.0   |  APIM 2.2.0   |  APIM 2.1.0   |
-     | ------------------------- | :-----------: | :-----------: | :-----------: | :-----------: |
-     | org.wso2.carbon.apimgt    |    6.4.50     |    6.3.95     |    6.2.201    |    6.1.66     |
+     | Dependency                |  APIM 4.0.0  |  APIM 3.2.0 |  APIM 3.1.0 |  APIM 3.0.0 |  
+     | ------------------------- |:------------:|:-----------:|:-----------:|:-----------:|  
+     | org.wso2.carbon.apimgt    |    9.0.174   |    6.7.206   |    6.6.163 |    6.5.349  |
 
 2. Add the JAR file of the extension to the **<APIM_HOME>/repository/components/dropins** directory.
    You can find the org.wso2.carbon.apimgt.securityenforcer.opa-\<version>.jar file in the **apim-handler-opa/target** directory.
 
-3. Add the bare minimum configurations to the **<APIM_HOME>/repository/conf/api-manager.xml** file within the <APIManager> tag, which can be found in the
+3. Add the bare minimum configurations to the *deployment.toml* file, which can be found in the
 **<APIM_HOME>/repository/conf** directory.
 
-```
-    <OPASecurityHandler>
-        <OperationMode>sync</OperationMode>
-        <OPAServer>
-            <EndPoint>http://localhost/8081/v1/data</EndPoint>
-        </OPAServer>
-    </OPASecurityHandler>
-```
+   ```
+    [apim.opa_security]
+    operation_mode = "sync"
+    server_endpoint = "http://localhost:8181/v1/data"
+   ```
    
 4. To engage the handler to APIs, you need to update the **<APIM_HOME>/repository/resources/api_templates/velocity_template.xml** file.
    Add the handler class as follows inside the *\<handlers xmlns="http://ws.apache.org/ns/synapse">* just after the foreach loop.
@@ -77,6 +102,10 @@ Following configurations are for WSO2 Api Manager 2.x versions.
    <handler class="org.wso2.carbon.apimgt.securityenforcer.opa.OPASecurityHandler"/>
    </handlers>
      ```
+
+5. Add the j2 mapping found in the apim-handler-opa/api-manager.xml.j2 to the 
+**<API_HOME>/repository/resources/conf/templates/repository/conf/api-manager.xml.j2**. This will map all the configs 
+added the deployment.toml.
 
 ### For the API Publisher
 
@@ -146,6 +175,7 @@ Policy writer can write a Rego Policy based on the above input.json.
 For an example, for PizzaShackAPI, we used pizzashack as the name of the Rego policy.
 
 - Example Rego Policy: This policy will decode the Authorization header and verify whether the claim - sub is admin or not.
+- It is mandatory to wrap all the policy validations to ```allow``` rule and validation should have a **binary** output.
 
 ```
 package pizzashack
@@ -178,5 +208,3 @@ curl -X PUT http://localhost:8181/v1/policies/pizzashack --data-binary @pizzasha
 ```
 curl -X PUT http://localhost:8181/v1/data/pizzashack/allow --data-binary @input.json
 ```
-
-- It is mandatory to wrap all the policy validations to ```allow``` rule and validation should have a **binary** output.
